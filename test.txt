@@ -1,0 +1,24 @@
+defVarnom0 
+defVarx0 
+defVary0 
+defVarone0 
+defProcputCB(c,b) 
+{ 
+    drop(c); 
+    letGo(b); 
+    walk(n) 
+} 
+defProcgoNorth() 
+{ 
+    whilecan(walk(1,north)){walk(1,north)} 
+    
+} 
+defProcgoWest() 
+{ 
+    if can(walk(1,west)){walk(1,west)} else nop() 
+    
+} 
+{ 
+    jump(3,3); 
+    putCB(2,1) 
+}

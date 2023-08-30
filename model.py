@@ -1,4 +1,6 @@
 
+import re
+
 palabras_clave = ["defVar", "drop", "letGo", "walk", "leap", "turn",
                   "turnto", "get", "grab", "nop", "jump", "Defproc"]
 
@@ -13,6 +15,12 @@ parametros_drop = ["1","2","3","4","5","6","7","8","9"]
 parametros_get = ["1","2","3","4","5","6","7","8","9"]
 parametros_grab = ["1","2","3","4","5","6","7","8","9"]
 parametros_letGo = ["1","2","3","4","5","6","7","8","9"]
+
+def tokenize_text_from_file(file_path):
+    with open(file_path, 'r') as file:
+        text = file.read()
+        tokens = re.findall(r'\w+|\S', text)
+    return tokens
 
 def parametro_x_palabra (palabra):
     if palabra == "jump":
