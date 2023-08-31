@@ -74,6 +74,9 @@ def palabra_parametro (palabras_clave, parametro, palabra):
             else: 
                 return "No"
             
+#def control_structure_If_Else (palabra, palabras_clave,parametro):
+    #avance = palabra_parametro(palabras_clave,parametro,palabra)
+    #if avance == "Yes":
 
                 
 
