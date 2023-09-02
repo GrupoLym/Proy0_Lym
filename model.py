@@ -9,17 +9,17 @@ caracteres_usados = ["(", ")", "{", "}", ";", ":", "," ]
 
 operadores = ["if", "else", "can", "while", "whilecan"]
 
-parametros_jump = ["x","y"]
+parametros_jump = ["x","y", ","]
 parametros_walk = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
-                    "north","south","west","east"]
+                    "north","south","west","east", ","]
 parametros_leap = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
-                    "north","south","west","east"]
-parametros_turn = ["left","right","around"]
-parametros_turnto = ["north","south","east","west"]
-parametros_drop = ["1","2","3","4","5","6","7","8","9"]
-parametros_get = ["1","2","3","4","5","6","7","8","9"]
-parametros_grab = ["1","2","3","4","5","6","7","8","9"]
-parametros_letGo = ["1","2","3","4","5","6","7","8","9"]
+                    "north","south","west","east", ","]
+parametros_turn = ["left","right","around", ","]
+parametros_turnto = ["north","south","east","west", ","]
+parametros_drop = ["1","2","3","4","5","6","7","8","9", ","]
+parametros_get = ["1","2","3","4","5","6","7","8","9", ","]
+parametros_grab = ["1","2","3","4","5","6","7","8","9", ","]
+parametros_letGo = ["1","2","3","4","5","6","7","8","9", ","]
 
 lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_jump, parametros_walk,
                            parametros_leap, parametros_turn, parametros_turnto, parametros_drop, parametros_get,
@@ -37,7 +37,8 @@ que no deberia estar, retorna false y el programa está mal escrito"""
 
 def analizador(list_tokens):
     respuesta = None #acá quiero que si la respuesta al final sigue siendo NONE, signifique que el programa esta bien escrito
-    if corrector_sintaxis_parametros(list_tokens) == False:
+    corrector_sintax = corrector_sintaxis_parametros(list_tokens)
+    if corrector_sintax == False:
         return False
     return respuesta
 
@@ -49,9 +50,14 @@ def corrector_sintaxis_parametros(list_tokens):
     respuesta = None
     
     for token in list_tokens:
+        existe = False
         for listas_caracteres in lista_posibles_escritos:
-            if token not in listas_caracteres:
-                respuesta = False
+            if token in listas_caracteres:
+                existe = True
+                break
+        if existe == False:
+            return False
+        
         if token == "jump":
             parametros = extraer_parentesis(list_tokens, "jump")
             for caracter in parametros:
