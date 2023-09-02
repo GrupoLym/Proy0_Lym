@@ -9,7 +9,7 @@ caracteres_usados = ["(", ")", "{", "}", ";", ":", "," ]
 
 operadores = ["if", "else", "can", "while", "whilecan"]
 
-parametros_jump = ["x","y", ","]
+parametros_jump = ["1","2","3","4","5","6","7","8","9", ","]
 parametros_walk = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
                     "north","south","west","east", ","]
 parametros_leap = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
