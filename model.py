@@ -1,11 +1,16 @@
 
 import re
+from pathlib import Path
 
 palabras_clave = ["defVar", "drop", "letGo", "walk", "leap", "turn",
                   "turnto", "get", "grab", "nop", "jump", "Defproc"]
 
+caracteres_usados = ["(", ")", "{", "}", ";", ":", "," ]
+
+operadores = ["if", "else", "can", "while", "whilecan"]
+
 parametros_jump = ["x","y"]
-parametos_walk = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
+parametros_walk = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
                     "north","south","west","east"]
 parametros_leap = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
                     "north","south","west","east"]
@@ -16,11 +21,102 @@ parametros_get = ["1","2","3","4","5","6","7","8","9"]
 parametros_grab = ["1","2","3","4","5","6","7","8","9"]
 parametros_letGo = ["1","2","3","4","5","6","7","8","9"]
 
-def tokenize_text_from_file(file_path):
-    with open(file_path, 'r') as file:
+lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_jump, parametros_walk,
+                           parametros_leap, parametros_turn, parametros_turnto, parametros_drop, parametros_get,
+                           parametros_grab, parametros_letGo]
+
+def create_tokens(archivo):
+    path = Path(archivo)
+    with path.open('r') as file:
         text = file.read()
         tokens = re.findall(r'\w+|\S', text)
     return tokens
+
+"""esta funcion recorre la lista de tokens y la compar con las listas de caracteres que tenemos arriba, si hay algo
+que no deberia estar, retorna false y el programa está mal escrito"""
+
+def analizador(list_tokens):
+    respuesta = None #acá quiero que si la respuesta al final sigue siendo NONE, signifique que el programa esta bien escrito
+    if corrector_sintaxis_parametros(list_tokens) == False:
+        return False
+    return respuesta
+
+"""acá creé una funcion que recibe la lista de todos los tokens y la funcion(jump, walk, turn, etc) y saca los tokens
+que esten al interior de los parentesis"""
+
+def corrector_sintaxis_parametros(list_tokens):
+    parametros = None
+    respuesta = None
+    
+    for token in list_tokens:
+        for listas_caracteres in lista_posibles_escritos:
+            if token not in listas_caracteres:
+                respuesta = False
+        if token == "jump":
+            parametros = extraer_parentesis(list_tokens, "jump")
+            for caracter in parametros:
+                if caracter not in parametros_jump:
+                    respuesta = False
+        elif token == "walk":
+            parametros = extraer_parentesis(list_tokens, "walk")
+            for caracter in parametros:
+                if caracter not in parametros_walk:
+                    respuesta = False
+        elif token == "leap":
+            parametros = extraer_parentesis(list_tokens, "leap")
+            for caracter in parametros:
+                if caracter not in parametros_leap:
+                    respuesta = False
+        elif token == "turn":
+            parametros = extraer_parentesis(list_tokens, "turn")
+            for caracter in parametros:
+                if caracter not in parametros_turn:
+                    respuesta = False
+        elif token == "turnto":
+            parametros = extraer_parentesis(list_tokens, "turnto")
+            for caracter in parametros:
+                if caracter not in parametros_turnto:
+                    respuesta = False
+        elif token == "drop":
+            parametros = extraer_parentesis(list_tokens, "drop")
+            for caracter in parametros:
+                if caracter not in parametros_drop:
+                    respuesta = False
+        elif token == "get":
+            parametros = extraer_parentesis(list_tokens, "get")
+            for caracter in parametros:
+                if caracter not in parametros_get:
+                    respuesta = False
+        elif token == "grab":
+            parametros = extraer_parentesis(list_tokens, "grab")
+            for caracter in parametros:
+                if caracter not in parametros_grab:
+                    respuesta = False
+        elif token == "letGo":
+            parametros = extraer_parentesis(list_tokens, "letGo")
+            for caracter in parametros:
+                if caracter not in parametros_letGo:
+                    respuesta = False
+    return respuesta
+ 
+def extraer_parentesis(list_tokens, funcion):
+    interior_parentesis = []
+    switch = False
+
+    for token in list_tokens:
+        if token == funcion:
+            switch = True
+        elif switch:
+            if token == '(':
+                continue  # Ignorar el paréntesis de apertura
+            elif token == ')':
+                break  # Salir cuando se encuentre el paréntesis de cierre
+            else:
+                interior_parentesis.append(token)
+
+    return interior_parentesis
+     
+#no entiendo que hizo de acá para abajo
 
 def parametro_x_palabra (palabra):
     if palabra == "jump":
@@ -74,9 +170,6 @@ def palabra_parametro (palabras_clave, parametro, palabra):
             else: 
                 return "No"
             
-#def control_structure_If_Else (palabra, palabras_clave,parametro):
-    #avance = palabra_parametro(palabras_clave,parametro,palabra)
-    #if avance == "Yes":
 
                 
 

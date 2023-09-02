@@ -2,6 +2,7 @@ import model
 
 def comenzar_parse():
     file = input("Ingrese el nombre del archivo: ")
-    print(model.tokenize_text_from_file(file))
+    lista_tokens = model.create_tokens(file)
+    
     
 comenzar_parse()
