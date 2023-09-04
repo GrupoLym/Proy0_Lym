@@ -13,7 +13,9 @@ parametros_comandos = ["1","2","3","4","5","6","7","8","9","front","left","right
                     "north","south","west","east", ",", "around"]
 variables_creadas = [[],
                      []]
-
+procesos_creados = [[],
+                    []]
+list_tokens = None
 
 lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_comandos]
 
@@ -21,15 +23,15 @@ def create_tokens(archivo):
     path = Path(archivo)
     with path.open('r') as file:
         text = file.read()
-        tokens = re.findall(r'\w+|\S', text)
-    return tokens
+        global list_tokens
+        list_tokens = re.findall(r'\w+|\S', text)
 
 """esta funcion recorre la lista de tokens y la compar con las listas de caracteres que tenemos arriba, si hay algo
 que no deberia estar, retorna false y el programa está mal escrito"""
 
-def analizador(list_tokens):
+def analizador():
     respuesta = None #acá quiero que si la respuesta al final sigue siendo NONE, signifique que el programa esta bien escrito
-    corrector_sintax = corrector_sintaxis_parametros(list_tokens)
+    corrector_sintax = corrector_sintaxis_parametros()
     if corrector_sintax == False:
         return False
     return respuesta
@@ -37,7 +39,7 @@ def analizador(list_tokens):
 """acá creé una funcion que recibe la lista de todos los tokens y la funcion(jump, walk, turn, etc) y saca los tokens
 que esten al interior de los parentesis"""
 
-def corrector_sintaxis_parametros(list_tokens):
+def corrector_sintaxis_parametros():
     respuesta = None
     
     while len(list_tokens) > 0 and respuesta == None:
@@ -64,30 +66,32 @@ def corrector_sintaxis_parametros(list_tokens):
             return False
         
         if token == "if":
-            respuesta = condicional_if(list_tokens)
+            respuesta = condicional_if()
+        elif token == "defProc":
+            respuesta = definir_procesos()
         elif token == "jump":
-            respuesta = funcion_comandos(list_tokens, "jump")
+            respuesta = funcion_comandos("jump")
         elif token == "walk":
-            respuesta = funcion_comandos(list_tokens, "walk")
+            respuesta = funcion_comandos("walk")
         elif token == "leap":
-            respuesta = funcion_comandos(list_tokens, "leap")
+            respuesta = funcion_comandos("leap")
         elif token == "turn":
-            respuesta = funcion_comandos(list_tokens, "turn")
+            respuesta = funcion_comandos("turn")
         elif token == "turnto":
-            respuesta = funcion_comandos(list_tokens, "turnto")
+            respuesta = funcion_comandos("turnto")
         elif token == "drop":
-            respuesta = funcion_comandos(list_tokens, "drop")
+            respuesta = funcion_comandos("drop")
         elif token == "get":
-            respuesta = funcion_comandos(list_tokens, "get")
+            respuesta = funcion_comandos("get")
         elif token == "grab":
-            respuesta = funcion_comandos(list_tokens, "grab")
+            respuesta = funcion_comandos("grab")
         elif token == "letGo":
-            respuesta = funcion_comandos(list_tokens, "letGo")
+            respuesta = funcion_comandos("letGo")
         list_tokens.remove(token)
         
     return respuesta
  
-def extraer_parentesis(list_tokens, funcion):
+def extraer_parentesis(funcion):
     interior_parentesis = []
     switch = False
 
@@ -103,10 +107,27 @@ def extraer_parentesis(list_tokens, funcion):
                 interior_parentesis.append(token)
 
     return interior_parentesis
-     
-def funcion_comandos(list_tokens, comando):
+
+def extraer_parentesis_funciones(list, funcion):
+    interior_parentesis = []
+    switch = False
+
+    for token in list:
+        if token == funcion:
+            switch = True
+        elif switch:
+            if token == '(':
+                continue  # Ignorar el paréntesis de apertura
+            elif token == ')':
+                break  # Salir cuando se encuentre el paréntesis de cierre
+            else:
+                interior_parentesis.append(token)
+
+    return interior_parentesis
+
+def funcion_comandos(comando):
     respuesta = None
-    parametros = extraer_parentesis(list_tokens, comando)
+    parametros = extraer_parentesis(comando)
     for caracter in parametros:
         if caracter not in parametros_comandos:
             respuesta = False
@@ -117,39 +138,44 @@ def creacion_variables(nombre_variable, valor_variable):
     variables_creadas[0].append(nombre_variable)
     variables_creadas[1].append(valor_variable)
 
-def condicional_if(list_tokens):
+def condicional_if(): #Lista de token que comienza con un if y sigue 
     respuesta = None
     if list_tokens[1] in operadores:
-        interior_if = extraer_parentesis(list_tokens, list_tokens[1])
-        interior_comando = extraer_parentesis(interior_if, interior_if[0])
+        interior_if = extraer_parentesis_funciones(list_tokens, list_tokens[1])
+        interior_comando = extraer_parentesis_funciones(interior_if, interior_if[0])
         for i in interior_comando:
             if i not in parametros_comandos:
                respuesta = False
     else:
         respuesta = False
-    return respuesta    
+    return respuesta  
+
+def definir_procesos(): 
+    procesos_creados[0].append(list_tokens[1])
+    variables_proc = extraer_parentesis_funciones(list_tokens, list_tokens[1])
+    procesos_creados[1].append(variables_proc)
 
 #no entiendo que hizo de acá para abajo
 
 def parametro_x_palabra (palabra):
     if palabra == "jump":
-        return parametros_jump
+        return parametros_comandos
     elif palabra == "walk":
-        return parametros_walk
+        return parametros_comandos
     elif palabra == "leap":
-        return parametros_leap
+        return parametros_comandos
     elif palabra == "turn":
-        return parametros_turn
+        return parametros_comandos
     elif palabra == "turnto":
-        return parametros_turnto
+        return parametros_comandos
     elif palabra == "drop":
-        return parametros_drop
+        return parametros_comandos
     elif palabra == "get":
-        return parametros_get
+        return parametros_comandos
     elif palabra == "grab":
-        return parametros_grab
+        return parametros_comandos
     elif palabra == "letGo":
-        return parametros_letGo
+        return parametros_comandos
     else:
         return ""
 
