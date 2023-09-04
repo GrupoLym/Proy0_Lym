@@ -20,10 +20,26 @@ parametros_drop = ["1","2","3","4","5","6","7","8","9", ","]
 parametros_get = ["1","2","3","4","5","6","7","8","9", ","]
 parametros_grab = ["1","2","3","4","5","6","7","8","9", ","]
 parametros_letGo = ["1","2","3","4","5","6","7","8","9", ","]
+parametros_if_elif_else = ["<",">",">=","<=","==","!=","and","or"]
+
+
+#Esta función guarda el nombre de la variable defina con defVar
+#Solamente funciona si la variable empieza con defVar 
+
+def nombre_variable (valor, nombre):
+    name_variable = []  # Cree dos listas la primera guarda el nombre de las variables y la segunda su valor
+    value = []
+    rta1 = "defVar" + nombre
+    rta2 = "defProc" + nombre
+    if nombre == rta1 + nombre or nombre == rta2:
+        name_variable.append("defVar"+ nombre)
+    else:
+        "La variable no puede ser identificada"
+        return name_varibale
 
 lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_jump, parametros_walk,
                            parametros_leap, parametros_turn, parametros_turnto, parametros_drop, parametros_get,
-                           parametros_grab, parametros_letGo]
+                           parametros_grab, parametros_letGo, parametros_if_elif_else, nombre_variable]
 
 def create_tokens(archivo):
     path = Path(archivo)
@@ -121,6 +137,10 @@ def extraer_parentesis(list_tokens, funcion):
                 interior_parentesis.append(token)
 
     return interior_parentesis
+
+    def If_Elif_Else (list_tokens):
+                
+
      
 #no entiendo que hizo de acá para abajo
 

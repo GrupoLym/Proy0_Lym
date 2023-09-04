@@ -1,6 +1,7 @@
 {
+    defVar nom = hola
     drop(3);
-    jump(x, y);
+    jump(5, 4);
     walk(3, north);
     leap(3, west);
     turn(left);
