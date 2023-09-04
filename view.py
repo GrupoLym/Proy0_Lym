@@ -1,7 +1,8 @@
 import model
 
 def comenzar_parse():
-    file = input("Ingrese el nombre del archivo: ")
+    #file = input("Ingrese el nombre del archivo: ")
+    file = "test.txt"
     lista_tokens = model.create_tokens(file)
     if model.analizador(lista_tokens) == None:
         print("Tu programa está bien escrito")

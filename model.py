@@ -9,21 +9,19 @@ caracteres_usados = ["(", ")", "{", "}", ";", ":", "," ]
 
 operadores = ["if", "else", "can", "while", "whilecan"]
 
-parametros_jump = ["1","2","3","4","5","6","7","8","9", ","]
+parametros_jump = parametros_drop = parametros_get = parametros_grab = parametros_letGo = ["1","2","3","4","5","6","7","8","9", ","]
 parametros_walk = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
                     "north","south","west","east", ","]
 parametros_leap = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
                     "north","south","west","east", ","]
 parametros_turn = ["left","right","around", ","]
 parametros_turnto = ["north","south","east","west", ","]
-parametros_drop = ["1","2","3","4","5","6","7","8","9", ","]
-parametros_get = ["1","2","3","4","5","6","7","8","9", ","]
-parametros_grab = ["1","2","3","4","5","6","7","8","9", ","]
-parametros_letGo = ["1","2","3","4","5","6","7","8","9", ","]
+variables_creadas = [[],
+                     []]
+
 
 lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_jump, parametros_walk,
-                           parametros_leap, parametros_turn, parametros_turnto, parametros_drop, parametros_get,
-                           parametros_grab, parametros_letGo]
+                           parametros_leap, parametros_turn, parametros_turnto]
 
 def create_tokens(archivo):
     path = Path(archivo)
@@ -49,16 +47,28 @@ def corrector_sintaxis_parametros(list_tokens):
     parametros = None
     respuesta = None
     
-    for token in list_tokens:
+    while len(list_tokens) > 0:
+        token = list_tokens[0]
+        posicion_nombre = None
+        posicion_valor = None
+        if token == "defVar":
+            posicion_nombre = list_tokens.index(token) + 1
+            posicion_valor = posicion_nombre + 1
+            valor = list_tokens[posicion_valor]
+            creacion_variables(list_tokens[posicion_nombre], valor)
         existe = False
         for listas_caracteres in lista_posibles_escritos:
             if token in listas_caracteres:
                 existe = True
                 break
+        if token in variables_creadas[0]:
+            existe = True
+        if token in variables_creadas[1]:
+            existe = True
         if existe == False:
             return False
-        
-        if token == "jump":
+            
+        elif token == "jump":
             parametros = extraer_parentesis(list_tokens, "jump")
             for caracter in parametros:
                 if caracter not in parametros_jump:
@@ -103,6 +113,8 @@ def corrector_sintaxis_parametros(list_tokens):
             for caracter in parametros:
                 if caracter not in parametros_letGo:
                     respuesta = False
+        list_tokens.remove(token)
+        
     return respuesta
  
 def extraer_parentesis(list_tokens, funcion):
@@ -122,6 +134,10 @@ def extraer_parentesis(list_tokens, funcion):
 
     return interior_parentesis
      
+def creacion_variables(nombre_variable, valor_variable):
+    variables_creadas[0].append(nombre_variable)
+    variables_creadas[1].append(valor_variable)
+
 #no entiendo que hizo de acá para abajo
 
 def parametro_x_palabra (palabra):
