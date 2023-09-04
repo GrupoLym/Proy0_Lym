@@ -41,6 +41,12 @@ que esten al interior de los parentesis"""
 
 def corrector_sintaxis_parametros():
     respuesta = None
+    cant_abrir_parentesis = list_tokens.count("(")
+    cant_cerrar_parentesis = list_tokens.count(")")
+    cant_abrir_corchetes = list_tokens.count("{")
+    cant_cerrar_corchetes = list_tokens.count("}")
+    if cant_abrir_corchetes != cant_cerrar_corchetes or cant_abrir_parentesis != cant_cerrar_parentesis:
+        respuesta = False
     
     while len(list_tokens) > 0 and respuesta == None:
         token = list_tokens[0] 
