@@ -5,7 +5,7 @@ from pathlib import Path
 palabras_clave = ["defVar", "drop", "letGo", "walk", "leap", "turn",
                   "turnto", "get", "grab", "nop", "jump", "Defproc"]
 
-caracteres_usados = ["(", ")", "{", "}", ";", ":", "," ]
+caracteres_usados = ["(", ")", "{", "}", ";", ":", "," , "="]
 
 operadores = ["if", "else", "can", "while", "whilecan"]
 
@@ -47,24 +47,26 @@ def corrector_sintaxis_parametros(list_tokens):
     parametros = None
     respuesta = None
     
-    while len(list_tokens) > 0:
-        token = list_tokens[0]
-        posicion_nombre = None
-        posicion_valor = None
-        if token == "defVar":
-            posicion_nombre = list_tokens.index(token) + 1
-            posicion_valor = posicion_nombre + 1
-            valor = list_tokens[posicion_valor]
-            creacion_variables(list_tokens[posicion_nombre], valor)
+    while len(list_tokens) > 0 and respuesta == None:
+        token = list_tokens[0] 
         existe = False
+        
+        if token == "defVar":
+           if list_tokens[list_tokens.index(token) + 2] == "=":
+                posicion_nombre = list_tokens.index(token) + 1
+                posicion_valor = posicion_nombre + 2
+                valor = list_tokens[posicion_valor]
+                creacion_variables(list_tokens[posicion_nombre], valor)
+           else:
+                posicion_nombre = list_tokens.index(token) + 1
+                posicion_valor = posicion_nombre + 1
+                valor = list_tokens[posicion_valor]
+                creacion_variables(list_tokens[posicion_nombre], valor)
+                
         for listas_caracteres in lista_posibles_escritos:
-            if token in listas_caracteres:
+            if token in listas_caracteres or token in variables_creadas[0] or token in variables_creadas[1]:
                 existe = True
                 break
-        if token in variables_creadas[0]:
-            existe = True
-        if token in variables_creadas[1]:
-            existe = True
         if existe == False:
             return False
             
