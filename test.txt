@@ -13,5 +13,6 @@ defVar one = 0
     turnto(north);
     drop(9);
     get(7);
-    letGo(8)
+    letGo(8);
+    if can(walk(1,west))
 }

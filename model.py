@@ -7,21 +7,15 @@ palabras_clave = ["defVar", "drop", "letGo", "walk", "leap", "turn",
 
 caracteres_usados = ["(", ")", "{", "}", ";", ":", "," , "="]
 
-operadores = ["if", "else", "can", "while", "whilecan"]
+operadores = ["if", "else", "can", "facing", "not", "while", "whilecan"]
 
-parametros_jump = parametros_drop = parametros_get = parametros_grab = parametros_letGo = ["1","2","3","4","5","6","7","8","9", ","]
-parametros_walk = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
-                    "north","south","west","east", ","]
-parametros_leap = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
-                    "north","south","west","east", ","]
-parametros_turn = ["left","right","around", ","]
-parametros_turnto = ["north","south","east","west", ","]
+parametros_comandos = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
+                    "north","south","west","east", ",", "around"]
 variables_creadas = [[],
                      []]
 
 
-lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_jump, parametros_walk,
-                           parametros_leap, parametros_turn, parametros_turnto]
+lista_posibles_escritos = [palabras_clave, caracteres_usados, operadores, parametros_comandos]
 
 def create_tokens(archivo):
     path = Path(archivo)
@@ -44,7 +38,6 @@ def analizador(list_tokens):
 que esten al interior de los parentesis"""
 
 def corrector_sintaxis_parametros(list_tokens):
-    parametros = None
     respuesta = None
     
     while len(list_tokens) > 0 and respuesta == None:
@@ -69,52 +62,27 @@ def corrector_sintaxis_parametros(list_tokens):
                 break
         if existe == False:
             return False
-            
+        
+        if token == "if":
+            respuesta = condicional_if(list_tokens)
         elif token == "jump":
-            parametros = extraer_parentesis(list_tokens, "jump")
-            for caracter in parametros:
-                if caracter not in parametros_jump:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "jump")
         elif token == "walk":
-            parametros = extraer_parentesis(list_tokens, "walk")
-            for caracter in parametros:
-                if caracter not in parametros_walk:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "walk")
         elif token == "leap":
-            parametros = extraer_parentesis(list_tokens, "leap")
-            for caracter in parametros:
-                if caracter not in parametros_leap:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "leap")
         elif token == "turn":
-            parametros = extraer_parentesis(list_tokens, "turn")
-            for caracter in parametros:
-                if caracter not in parametros_turn:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "turn")
         elif token == "turnto":
-            parametros = extraer_parentesis(list_tokens, "turnto")
-            for caracter in parametros:
-                if caracter not in parametros_turnto:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "turnto")
         elif token == "drop":
-            parametros = extraer_parentesis(list_tokens, "drop")
-            for caracter in parametros:
-                if caracter not in parametros_drop:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "drop")
         elif token == "get":
-            parametros = extraer_parentesis(list_tokens, "get")
-            for caracter in parametros:
-                if caracter not in parametros_get:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "get")
         elif token == "grab":
-            parametros = extraer_parentesis(list_tokens, "grab")
-            for caracter in parametros:
-                if caracter not in parametros_grab:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "grab")
         elif token == "letGo":
-            parametros = extraer_parentesis(list_tokens, "letGo")
-            for caracter in parametros:
-                if caracter not in parametros_letGo:
-                    respuesta = False
+            respuesta = funcion_comandos(list_tokens, "letGo")
         list_tokens.remove(token)
         
     return respuesta
@@ -136,9 +104,30 @@ def extraer_parentesis(list_tokens, funcion):
 
     return interior_parentesis
      
+def funcion_comandos(list_tokens, comando):
+    respuesta = None
+    parametros = extraer_parentesis(list_tokens, comando)
+    for caracter in parametros:
+        if caracter not in parametros_comandos:
+            respuesta = False
+            break
+    return respuesta
+
 def creacion_variables(nombre_variable, valor_variable):
     variables_creadas[0].append(nombre_variable)
     variables_creadas[1].append(valor_variable)
+
+def condicional_if(list_tokens):
+    respuesta = None
+    if list_tokens[1] in operadores:
+        interior_if = extraer_parentesis(list_tokens, list_tokens[1])
+        interior_comando = extraer_parentesis(interior_if, interior_if[0])
+        for i in interior_comando:
+            if i not in parametros_comandos:
+               respuesta = False
+    else:
+        respuesta = False
+    return respuesta    
 
 #no entiendo que hizo de acá para abajo
 
