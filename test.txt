@@ -1,36 +1,26 @@
-defVar nom = 0 
-defVar x = 0
-defVar y = 0
-defVar gordo = 8
+defVar nom 0 
+defVar x 0 
+defVar y 0 
+defVar one 0 
 
-defProc putCB (c, b) 
+defProc putCB(c,b) 
 { 
-     drop(c);
-     letGo(b); 
-     walk(north) 
-}
+    drop(c); 
+    letGo(b); 
+    walk(north) 
+} 
 
-defProc comer (h, l)
-{
-    drop(h, l)
-    jump(x, gordo)
-}
+defProc goNorth() 
+{ 
+    whilecan(walk(1,north)) {walk(1,north)} 
+} 
 
-{
-    while can(walk(1,north)) {walk(1,north)}
-    if can(walk(1,west)) {walk(1,west)} else nop()
-}
-defProc proceso(z, x)
-{
-    drop(3);
-    jump(3, 5);
-    walk(3, north);
-    leap(3, west);
-    turn(left);
-    turn(around);
-    turnto(north);
-    drop(8);
-    get(7);
-    letGo(8);
-    putCB(2,1)
+defProc goWest() 
+{ 
+    if can(walk(1,west)) {walk(1,west)} else nop() 
+} 
+
+{ 
+    jump(3,3); 
+    putCB(2,1) 
 }

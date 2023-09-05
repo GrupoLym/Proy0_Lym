@@ -250,7 +250,8 @@ def definir_procesos():
     respuesta = None
     procesos_creados[0].append(list_tokens[1])
     variables_proc = extraer_parentesis_funciones(list_tokens, list_tokens[1])
-    variables_proc.remove(",")
+    if "," in variables_proc:
+        variables_proc.remove(",")
     for variable in variables_proc:
         procesos_creados[1].append(variable)
     interior_proceso = extraer_corchetes_procesos(list_tokens)
