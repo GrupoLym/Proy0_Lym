@@ -9,7 +9,7 @@ caracteres_usados = ["(", ")", "{", "}", ";", ":", "," , "="]
 
 operadores = ["if", "else", "can", "facing", "not", "while", "whilecan"]
 
-parametros_comandos = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
+parametros_comandos = ["1","2","3","4","5","6","7","8","front","left","right","back",
                     "north","south","west","east", ",", "around"]
 
 global variables_creadas
@@ -81,6 +81,8 @@ def corrector_sintaxis_parametros():
         
         if token == "if":
             respuesta = condicional_if()
+        elif token == "while":
+            respuesta = ciclo_while()
         elif token == "jump":
             respuesta = funcion_comandos("jump")
         elif token == "walk":
@@ -99,6 +101,11 @@ def corrector_sintaxis_parametros():
             respuesta = funcion_comandos("grab")
         elif token == "letGo":
             respuesta = funcion_comandos("letGo")
+        else:
+            if token in procesos_creados[0]:
+                respuesta = check_proceso(token)
+                
+                    
         list_tokens.remove(token)
         
     return respuesta
@@ -138,17 +145,17 @@ def extraer_parentesis_funciones(list, funcion):
 
     return interior_parentesis
 
-def extraer_corchetes_procesos(list, llave):
+def extraer_corchetes_procesos(list):
     interior_corchetes = []
     switch = False
 
     for token in list:
-        if token == llave:
+        if token == "{":
             switch = True
         elif switch:
-            if token == '{':
+            if token == "{":
                 continue  # Ignorar el paréntesis de apertura
-            elif token == '}':
+            elif token == "}":
                 break  # Salir cuando se encuentre el paréntesis de cierre
             else:
                 interior_corchetes.append(token)
@@ -175,11 +182,69 @@ def condicional_if(): #Lista de token que comienza con un if y sigue
         interior_comando = extraer_parentesis_funciones(interior_if, interior_if[0])
         for i in interior_comando:
             if i not in parametros_comandos:
-               respuesta = False
-        
+               respuesta = False 
+        acciones = extraer_corchetes_procesos(list_tokens)
+        ciclo = 0
+        while respuesta == None and ciclo < len(acciones):
+            i = acciones[ciclo]
+            if i == "jump":
+               respuesta = funcion_comandos("jump")
+            elif i == "walk":
+                respuesta = funcion_comandos("walk")
+            elif i == "leap":
+                respuesta = funcion_comandos("leap")
+            elif i == "turn":
+                respuesta = funcion_comandos("turn")
+            elif i == "turnto":
+                respuesta = funcion_comandos("turnto")
+            elif i == "drop":
+                respuesta = funcion_comandos("drop")
+            elif i == "get":
+                respuesta = funcion_comandos("get")
+            elif i == "grab":
+                respuesta = funcion_comandos("grab")
+            elif i == "letGo":
+                respuesta = funcion_comandos("letGo")
+            ciclo += 1
     else:
         respuesta = False
+        
     return respuesta  
+
+def ciclo_while():
+    respuesta = None
+    if list_tokens[1] in operadores:
+        interior_if = extraer_parentesis_funciones(list_tokens, list_tokens[1])
+        interior_comando = extraer_parentesis_funciones(interior_if, interior_if[0])
+        for i in interior_comando:
+            if i not in parametros_comandos:
+               respuesta = False 
+        acciones = extraer_corchetes_procesos(list_tokens)
+        ciclo = 0
+        while respuesta == None and ciclo < len(acciones):
+            i = acciones[ciclo]
+            if i == "jump":
+               respuesta = funcion_comandos("jump")
+            elif i == "walk":
+                respuesta = funcion_comandos("walk")
+            elif i == "leap":
+                respuesta = funcion_comandos("leap")
+            elif i == "turn":
+                respuesta = funcion_comandos("turn")
+            elif i == "turnto":
+                respuesta = funcion_comandos("turnto")
+            elif i == "drop":
+                respuesta = funcion_comandos("drop")
+            elif i == "get":
+                respuesta = funcion_comandos("get")
+            elif i == "grab":
+                respuesta = funcion_comandos("grab")
+            elif i == "letGo":
+                respuesta = funcion_comandos("letGo")
+            ciclo += 1
+    else:
+        respuesta = False
+    return respuesta
 
 def definir_procesos(): 
     respuesta = None
@@ -188,7 +253,7 @@ def definir_procesos():
     variables_proc.remove(",")
     for variable in variables_proc:
         procesos_creados[1].append(variable)
-    interior_proceso = extraer_corchetes_procesos(list_tokens, "{")
+    interior_proceso = extraer_corchetes_procesos(list_tokens)
     ciclo = 0
     while respuesta == None and ciclo < len(interior_proceso):
         i = interior_proceso[ciclo]
@@ -211,6 +276,22 @@ def definir_procesos():
         elif i == "letGo":
             respuesta = funcion_comandos("letGo")
         ciclo += 1
+    return respuesta
+
+def check_proceso(nombre_proceso):
+    respuesta = None
+    if nombre_proceso not in procesos_creados[0]:
+        respuesta = False
+    else:
+        respuesta = check_parametros_proceso(nombre_proceso)
+    return respuesta
+
+def check_parametros_proceso(nombre_proceso):
+    respuesta = None
+    parametros = extraer_parentesis(nombre_proceso)
+    for value in parametros:
+        if value not in parametros_comandos and value not in procesos_creados[1]:
+            respuesta = False
     return respuesta
 
 #no entiendo que hizo de acá para abajo
