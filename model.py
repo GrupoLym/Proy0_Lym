@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 palabras_clave = ["defVar", "drop", "letGo", "walk", "leap", "turn",
-                  "turnto", "get", "grab", "nop", "jump", "Defproc"]
+                  "turnto", "get", "grab", "nop", "jump", "defProc"]
 
 caracteres_usados = ["(", ")", "{", "}", ";", ":", "," , "="]
 
@@ -11,8 +11,11 @@ operadores = ["if", "else", "can", "facing", "not", "while", "whilecan"]
 
 parametros_comandos = ["1","2","3","4","5","6","7","8","9","front","left","right","back",
                     "north","south","west","east", ",", "around"]
-variables_creadas = [[],
+
+global variables_creadas
+variables_creadas =  [[],
                      []]
+global procesos_creados
 procesos_creados = [[],
                     []]
 list_tokens = None
@@ -63,9 +66,14 @@ def corrector_sintaxis_parametros():
                 posicion_valor = posicion_nombre + 1
                 valor = list_tokens[posicion_valor]
                 creacion_variables(list_tokens[posicion_nombre], valor)
-                
+        if token == "defProc":
+            respuesta = definir_procesos()
+            
         for listas_caracteres in lista_posibles_escritos:
             if token in listas_caracteres or token in variables_creadas[0] or token in variables_creadas[1]:
+                existe = True
+                break
+            if token in procesos_creados[0] or token in procesos_creados[1]:
                 existe = True
                 break
         if existe == False:
@@ -73,8 +81,6 @@ def corrector_sintaxis_parametros():
         
         if token == "if":
             respuesta = condicional_if()
-        elif token == "defProc":
-            respuesta = definir_procesos()
         elif token == "jump":
             respuesta = funcion_comandos("jump")
         elif token == "walk":
@@ -97,6 +103,7 @@ def corrector_sintaxis_parametros():
         
     return respuesta
  
+
 def extraer_parentesis(funcion):
     interior_parentesis = []
     switch = False
@@ -131,13 +138,30 @@ def extraer_parentesis_funciones(list, funcion):
 
     return interior_parentesis
 
+def extraer_corchetes_procesos(list, llave):
+    interior_corchetes = []
+    switch = False
+
+    for token in list:
+        if token == llave:
+            switch = True
+        elif switch:
+            if token == '{':
+                continue  # Ignorar el paréntesis de apertura
+            elif token == '}':
+                break  # Salir cuando se encuentre el paréntesis de cierre
+            else:
+                interior_corchetes.append(token)
+
+    return interior_corchetes
+
 def funcion_comandos(comando):
     respuesta = None
     parametros = extraer_parentesis(comando)
     for caracter in parametros:
-        if caracter not in parametros_comandos:
+        if caracter not in parametros_comandos and caracter not in variables_creadas[0] and caracter not in variables_creadas[1] and caracter not in procesos_creados[0] and caracter not in procesos_creados[1]:
             respuesta = False
-            break
+                
     return respuesta
 
 def creacion_variables(nombre_variable, valor_variable):
@@ -152,14 +176,42 @@ def condicional_if(): #Lista de token que comienza con un if y sigue
         for i in interior_comando:
             if i not in parametros_comandos:
                respuesta = False
+        
     else:
         respuesta = False
     return respuesta  
 
 def definir_procesos(): 
+    respuesta = None
     procesos_creados[0].append(list_tokens[1])
     variables_proc = extraer_parentesis_funciones(list_tokens, list_tokens[1])
-    procesos_creados[1].append(variables_proc)
+    variables_proc.remove(",")
+    for variable in variables_proc:
+        procesos_creados[1].append(variable)
+    interior_proceso = extraer_corchetes_procesos(list_tokens, "{")
+    ciclo = 0
+    while respuesta == None and ciclo < len(interior_proceso):
+        i = interior_proceso[ciclo]
+        if i == "jump":
+            respuesta = funcion_comandos("jump")
+        elif i == "walk":
+            respuesta = funcion_comandos("walk")
+        elif i == "leap":
+            respuesta = funcion_comandos("leap")
+        elif i == "turn":
+            respuesta = funcion_comandos("turn")
+        elif i == "turnto":
+            respuesta = funcion_comandos("turnto")
+        elif i == "drop":
+            respuesta = funcion_comandos("drop")
+        elif i == "get":
+            respuesta = funcion_comandos("get")
+        elif i == "grab":
+            respuesta = funcion_comandos("grab")
+        elif i == "letGo":
+            respuesta = funcion_comandos("letGo")
+        ciclo += 1
+    return respuesta
 
 #no entiendo que hizo de acá para abajo
 
