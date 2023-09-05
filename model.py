@@ -295,8 +295,6 @@ def check_parametros_proceso(nombre_proceso):
             respuesta = False
     return respuesta
 
-#no entiendo que hizo de acá para abajo
-
 def parametro_x_palabra (palabra):
     if palabra == "jump":
         return parametros_comandos
@@ -319,16 +317,12 @@ def parametro_x_palabra (palabra):
     else:
         return ""
 
-""" No se si esta función sirva y sea la manera optimizada de la función de arriba,
-creo que no sirve porque el return va a terminar siendo un String igual a parametros_...
-más no la variable"""
 
 def parametro_x_palabra_opti (palabra, palabras_clave):
     for word in palabras_clave:
         if palabra in palabras_clave and palabra == "parametros_"+palabra:
             return "parametros_"+palabra
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 def palabras_clave (palabras_clave, palabra):
     for word in palabras_clave:
