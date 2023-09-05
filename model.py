@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 palabras_clave = ["defVar", "drop", "letGo", "walk", "leap", "turn",
-                  "turnto", "get", "grab", "nop", "jump", "defProc"]
+                  "turnto", "get", "grab", "nop", "jump", "defProc", "repeat"]
 
 caracteres_usados = ["(", ")", "{", "}", ";", ":", "," , "="]
 
